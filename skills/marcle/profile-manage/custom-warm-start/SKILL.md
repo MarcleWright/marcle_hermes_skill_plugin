@@ -336,38 +336,50 @@ D. 其他补充要求
 What to save:
 
 ```text
-Profile user dislikes overly long answers and too much English.
-Profile user prefers not to receive too many questions at once.
-Profile user dislikes robotic or overly formal wording.
+Profile user prefers simple questions answered with a conclusion plus a brief reason.
+Profile user prefers professional questions answered in depth, including background, risks, alternatives, and sources when useful.
+Profile user prefers incomplete-information questions answered with explicit assumptions unless clarification is necessary.
+Profile user prefers decisions framed as 2–3 options with tradeoffs.
+Profile user wants important factual claims supported with sources or links when possible.
+Profile user accepts a fact-first, non-pandering assistant stance, especially for health, news, policy, finance, and science topics.
 ```
 
 ### Step 6: Summary and Memory Save
 
 Before saving, summarize in natural language. Since this workflow defaults to automatic memory saving, do not ask for permission unless privacy concerns arise. However, be transparent.
 
-Example Chinese:
+Memory should be compact. Do not save the full questionnaire or every raw answer. Save only durable preferences and stable high-level context. Aim for **5–8 short memory entries total** after the full warm start.
+
+Recommended memory strategy:
+
+1. Save only after all 5 rounds are complete, not after every answer.
+2. Merge related preferences into one concise line when possible.
+3. Use `replace` instead of adding duplicates if a similar preference already exists.
+4. Prefer `target: "user"` for name, language, tone, answer style, broad work/domain context, and interests.
+5. Use `target: "memory"` only for environment/profile-management facts. This is usually not needed for warm-start onboarding.
+6. Never save temporary tasks, sensitive private details, full family relationships, exact workplace/client/salary, medical details, account data, or anything the user says not to remember.
+7. Write memories as declarative facts, not commands.
+
+Example Chinese summary:
 
 ```text
 我先整理一下我记住的习惯：
 
 - 我以后称呼您为“李阿姨”
 - 主要用中文和您交流
-- 说话尽量亲切自然，不要太生硬
-- 简单问题我会先直接说结论
-- 手机、App 操作类问题，我会一步一步慢慢讲
-- 新闻、健康养生这类内容，我会尽量用容易懂的话解释
-- 您平时主要关注日常信息、写消息、解释手机操作
-- 您以前/现在比较熟悉教育领域，平时喜欢旅游和历史话题
-- 我会避免太啰嗦、太多英文
+- 说话尽量亲切自然
+- 简单问题我会先给结论，再简单说明原因
+- 专业或重要问题我会多解释背景、风险、替代方案和参考来源
+- 信息不完整时，我会先说明假设，再给出回答
+- 做选择时，我会给 2–3 个选项并说明取舍
+- 对健康、新闻、政策、投资理财等事实类问题，我会尽量保持客观，并提醒可靠来源
+- 您主要希望我帮忙的方向是：……
+- 您的兴趣话题包括：……
 
 我会把这些作为以后和您交流的习惯记下来。以后您想改，直接告诉我就可以。
 ```
 
-Then call the memory tool in one batch.
-
-Use `target: "user"` for user identity, preferences, broad work/domain context, and interest preferences.
-
-Example memory batch:
+Example compact memory batch:
 
 ```json
 {
@@ -375,29 +387,39 @@ Example memory batch:
   "operations": [
     {
       "action": "add",
-      "content": "Profile user prefers to be called \"李阿姨\"."
+      "content": "Profile user prefers to be called \"李阿姨\" and prefers Chinese conversation."
     },
     {
       "action": "add",
-      "content": "Profile user prefers warm, natural Chinese conversation rather than formal wording."
+      "content": "Profile user prefers warm, natural wording rather than stiff or overly formal wording."
     },
     {
       "action": "add",
-      "content": "Profile user prefers concise answers, with more explanation only when needed."
+      "content": "Profile user prefers simple questions answered with a conclusion plus a brief reason."
     },
     {
       "action": "add",
-      "content": "Profile user works broadly in education and often wants help explaining ideas clearly."
+      "content": "Profile user prefers professional or important questions answered with background, risks, alternatives, and sources when useful."
     },
     {
       "action": "add",
-      "content": "Profile user enjoys topics about travel, history, and daily information lookup."
+      "content": "Profile user prefers decisions framed as 2–3 options with tradeoffs and wants important factual claims supported with sources when possible."
+    },
+    {
+      "action": "add",
+      "content": "Profile user accepts a fact-first, non-pandering assistant stance, especially for health, news, policy, finance, and science topics."
+    },
+    {
+      "action": "add",
+      "content": "Profile user works broadly in education and often handles communication and document drafting."
+    },
+    {
+      "action": "add",
+      "content": "Profile user enjoys travel, history, cooking, and daily information lookup."
     }
   ]
 }
 ```
-
-Use `target: "memory"` only for environment or profile-management facts. This is usually not needed for warm-start onboarding.
 
 ### Step 7: Closing Message
 
@@ -626,15 +648,19 @@ Profile user has exact diagnosis X and medication Y.
 
 2. Keep each memory short and high-signal.
 
-3. Save in batches after the summary, not after every answer.
+3. Save in one batch after all 5 rounds and the final summary, not after every answer.
 
-4. Prefer `target: "user"` for personal preferences, broad domain context, and interest preferences.
+4. Keep the final memory set compact: normally 5–8 short entries total.
 
-5. Use `replace` instead of adding duplicates when the user changes a preference.
+5. Prefer `target: "user"` for personal preferences, broad domain context, and interest preferences.
 
-6. If the user says “不要记这个”, “这个别保存”, or expresses privacy concern, do not save that content.
+6. Use `replace` instead of adding duplicates when the user changes a preference.
 
-7. If the user corrects a saved preference, update memory immediately.
+7. If the user says “不要记这个”, “这个别保存”, or expresses privacy concern, do not save that content.
+
+8. If the user corrects a saved preference, update memory immediately.
+
+9. Do not save the questionnaire transcript, option letters, or temporary setup progress.
 
 ## Handling “随便” or Very Short Answers
 
