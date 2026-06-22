@@ -4,7 +4,8 @@ Marcle's personal collection of Hermes Agent skills and plugins.
 
 ## Skills
 
-- `skills/hermes/custom-warm-start` — Chinese warm-start onboarding flow for personal/family Hermes profiles.
+- `skills/profile-manage/custom-warm-start` — Chinese warm-start onboarding flow for personal/family Hermes profiles.
+- `skills/creative/image-generation-openai` — OpenAI-HK image generation workflow and script.
 - `skills/creative/image-generation-openai` — Text-to-image and image-to-image generation via OpenAI-HK API (gpt-image-2).
 
 ## Layout
