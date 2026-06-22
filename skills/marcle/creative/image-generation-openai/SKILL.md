@@ -31,17 +31,46 @@ Do NOT use this skill when:
 
 ## Requirements
 
-The API key must be stored as `openai-hk_image_key` in the Hermes `.env` file:
-
-```
-openai-hk_image_key=your_key
-```
+The API key must be stored as `openai-hk_image_key` in the target Hermes profile's `.env` file.
 
 The script checks these locations in order:
-- `~/AppData/Local/hermes/.env` (Windows Hermes)
-- `~/.hermes/.env` (Unix Hermes)
+- `~/AppData/Local/hermes/.env` (Windows default Hermes profile)
+- `~/.hermes/.env` (Unix default Hermes profile)
+
+For named profiles, set the same key in that profile's `.env`, for example:
+- `~/AppData/Local/hermes/profiles/<profile>/.env`
+- `~/.hermes/profiles/<profile>/.env`
 
 Never print the API key back to the user.
+
+## Install-Time `.env` Setup
+
+When installing this skill, Hermes should also check the target profile's `.env` file and prepare the required key entry.
+
+Use Marcle's standard custom skill/plugin section:
+
+```env
+# =============================================================================
+# MARCLE SKILL PLUGIN
+# =============================================================================
+# API key used by skills/marcle/creative/image-generation-openai
+openai-hk_image_key=
+```
+
+Install behavior:
+
+1. Locate the target profile `.env` file.
+   - Default profile: `~/AppData/Local/hermes/.env` on Windows, or `~/.hermes/.env` on Unix.
+   - Named profile: `~/AppData/Local/hermes/profiles/<profile>/.env` on Windows, or `~/.hermes/profiles/<profile>/.env` on Unix.
+2. Check whether the file already contains the section header `MARCLE SKILL PLUGIN`.
+3. If the section does not exist, append the full section shown above near the end of `.env`.
+4. If the section already exists but `openai-hk_image_key=` is missing, add these two lines under that section:
+   - `# API key used by skills/marcle/creative/image-generation-openai`
+   - `openai-hk_image_key=`
+5. If `openai-hk_image_key=` already exists, do not duplicate it.
+6. Do not fill in or print the actual key unless the user explicitly provides it for this profile.
+7. Because `.env` is profile configuration and may contain secrets, ask for explicit confirmation before writing changes.
+8. If a gateway for that profile is already running, remind the user to restart it after updating `.env`.
 
 ## Usage
 
